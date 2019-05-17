@@ -1,0 +1,103 @@
+
+a {
+    margin: 10px;
+}
+
+#conatiner {
+    height: auto; 
+}
+#container, #addnew-container {
+    background-color:rgb(240, 240, 240); 
+    margin: 20px; 
+    margin-bottom: 5px;
+    width:1280px;
+    border-radius: 30px;
+}
+#addnew-container{
+    height: 125px; 
+}
+#quotes,#author, #quote {
+    font-size: 22px;
+    font-family: "Times New Roman", Times, serif;
+    font-style: oblique;
+    font-weight: bolder;
+}
+
+#save {
+    margin-left: 1130px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#generate {
+    font-size: 18px;
+    border-radius: 5px;
+}
+#newSave {
+    width: 100px;
+    height: 30px;
+    font-size: 20px;
+    border-radius: 5px;
+}
+#newQuotes {
+    margin: 10px; height: 80px; width:900px; font-size: 22px;
+    border-radius: 10px;
+    font-family: Times, serif;
+    font-weight: bold;
+}
+
+#newAuthor {
+    font-size: 20px; margin: 10px; height: 30px; width: 900px;
+    border-radius: 7px;
+    font-family: Times, serif;
+    font-weight: bold;
+}
+
+#addnew-container{
+    height: 220px;
+}
+
+#quote {
+    height: 115px;
+    width:1200px;
+    align-content: center;
+    border-radius: 5px;
+    margin: 10px; 
+    margin-left: 140px;
+    background-color:rgb(240, 240, 240); 
+}
+
+#hr {
+    border: 1px solid black;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#editDelete-buttons{
+    border-color: black;
+    display: inline
+}
+
+#editQuote{
+    margin: 10px; height: 50px; width:800px; font-size: 16px;
+    margin-top: 30px;
+    border-radius: 6px;
+    font-family: Times, serif;
+    font-weight: bold;
+}
+
+#editAuthor {
+    font-size: 16px; margin: 10px; height: 25px; width: 800px;
+    border-radius: 2px;
+    font-family: Times, serif;
+    font-weight: bold;
+}
+
+#saveBtn, #cancelBtn {
+    width: 100px;
+    height: 30px;
+    border-radius: 5px;
+    margin-right: 20px;
+    margin-bottom: 50px;
+    font-weight: bold;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>  
+        <title>Add Quotes</title>
+        <link rel="stylesheet" type="text/css" href="style-sheet.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body align = 'center'>
+        <form id='form'>
+        <h1 >Quotify</h1>
+        <div id='menu-links'>
+            <a href='random-quotes.html'>Random Quotes (API)</a><b>|</b><a href='random-quotes-local.html'>Random Quotes (Local)</a><b>|</b><a href='add-quotes.html'>Add Quotes</a>|<a href='list-quotes.html'>List All (Local)</a>
+        </div>
+        <div id='addnew-container'>
+                <textarea id='newQuotes' placeholder="You can type here ..." required></textarea>
+                 <input type='text' id='newAuthor' placeholder="Author name" required> <br>
+            <label>
+                    <button class="btn" id='newSave'>Save</button><br>
+            </label>    
+        </div>
+        <script>
+            const quotesHandle = document.getElementById('newQuotes')
+            const authorHandle = document.getElementById('newAuthor')
+            const formHandle = document.getElementById('form')
+            const submitHandle = document.getElementById('newSave')
+        
+            // mouseover events
+           submitHandle.addEventListener('mouseover',function(){
+                submitHandle.style.backgroundColor = 'blue';
+                submitHandle.style.color = 'white';
+            })
+
+            submitHandle.addEventListener('mouseout',function(){
+                submitHandle.style.backgroundColor = 'rgb(240, 240, 240)';
+                submitHandle.style.color = 'black';
+            })
+
+           
+            submitHandle.addEventListener('click',function(e){
+              const  quoteObj = {
+                        author: authorHandle.value,
+                        content: quotesHandle.value
+                    }
+                    let stored
+                    if(localStorage.getItem('localObj')){
+                        stored = JSON.parse(localStorage.getItem('localObj'))
+                    }  else{
+                        localStorage.setItem('localObj',JSON.stringify([]))
+                        stored = JSON.parse(localStorage.getItem('localObj'))
+                    }
+
+                    stored.push(quoteObj)
+                    localStorage.setItem('localObj',JSON.stringify(stored))
+
+                    console.log(JSON.parse(localStorage.getItem('localObj')))  
+                    alert('Successfully stored to local..!!')
+                
+            })
+        </script>
+        </form>
+    </body>
+</html>

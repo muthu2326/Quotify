@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>  
+        <title>Random Quotes(Local)</title>
+        <link rel="stylesheet" type="text/css" href="style-sheet.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body align='center'>
+        <form id='form'>
+        <h1 >Quotify</h1>
+        <div id='menu-links'>
+            <a href='random-quotes.html'>Random Quotes (API)</a><b>|</b><a href='random-quotes-local.html'>Random Quotes (Local)</a><b>|</b><a href='add-quotes.html'>Add Quotes</a>|<a href='list-quotes.html'>List All (Local)</a>
+        </div>
+        <div id='container'><br>
+            <label id='quotes'></label>
+            <br>
+            <br><label id='author'></label>
+            </div>
+        <label>
+            <br>
+            <input type='submit' value='Get another Quote' id='generate'>
+        </label>
+
+        <script>
+            const quotesHandle = document.getElementById('quotes')
+            const authorHandle = document.getElementById('author')
+            const formHandle = document.getElementById('form')
+            const submitHandle = document.getElementById('generate')
+        
+           
+           window.onload = function(){
+               savedQuote()
+           }
+           
+           submitHandle.addEventListener('mouseover',function(){
+                submitHandle.style.backgroundColor = 'blue';
+                submitHandle.style.color = 'white';
+            })
+
+            submitHandle.addEventListener('mouseout',function(){
+                submitHandle.style.backgroundColor = 'rgb(240, 240, 240)';
+                submitHandle.style.color = 'black';
+            })
+
+            function savedQuote(){
+                const stored = JSON.parse(localStorage.getItem('localObj'))            
+                const randomNumber = Math.round(Math.random() * stored.length)
+                if(stored.length <= 0){
+                    quotesHandle.innerHTML = 'No records stored in Local'
+                }
+                else {
+                    if(randomNumber < stored.length){
+                    console.log(randomNumber)
+                    console.log(stored[randomNumber])
+                    quotesHandle.innerHTML = `"${stored[randomNumber].content}"`
+                    authorHandle.innerHTML = `- ${stored[randomNumber].author}` 
+                }else{
+                    quotesHandle.innerHTML = `"${stored[randomNumber - 1].content}"`
+                    authorHandle.innerHTML = `- ${stored[randomNumber - 1].author}` 
+                }
+            }
+        }
+           
+            formHandle.addEventListener('submit',function(e){
+                e.preventDefault()
+                savedQuote()
+            })
+        </script>
+        </form>
+    </body>
+</html>

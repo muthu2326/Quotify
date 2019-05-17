@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+    <head>  
+        <title>Saved Quotes</title>
+        <link rel="stylesheet" type="text/css" href="style-sheet.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body align = 'center'>
+        <form id='form'>
+        <h1 >Quotify</h1>
+        <div id='menu-links' style='margin-bottom: 50px'>
+            <a href='random-quotes.html'>Random Quotes (API)</a><b>|</b><a href='random-quotes-local.html'>Random Quotes (Local)</a><b>|</b><a href='add-quotes.html'>Add Quotes</a>|<a href='list-quotes.html'>List All (Local)</a>
+            <br>
+        </div>
+
+        <div id='quote-list' style='height: auto; align-content: center;'>
+        </div>
+
+        <script>
+                
+            let btnHandle
+            const quotesHandle = document.getElementById('quote-list')
+            const formHandle = document.getElementById('form')
+            
+            displayLocal()  // printing all quotes in the local
+
+            function displayLocal(){
+
+                const stored = JSON.parse(localStorage.getItem('localObj'))
+                quotesHandle.innerHTML = ''
+                if(stored.length <= 0){
+                    quotesHandle.innerHTML = `<span style='font-size: 22px;'><b>No records to display<b></span>`
+                }else{  
+
+                        // iterating over the array for accessing each quotes in localstorage
+                        stored.forEach(function(quote,i){
+
+                            const mainDiv = document.createElement('div')
+
+                            // creating div for each element
+                            const divElement = document.createElement('div')
+                            divElement.id = 'quote'
+
+                            // creating label element for quotes
+                            const label = document.createElement('label')
+                            label.appendChild(document.createElement('br'))
+                            const quoteStored = document.createTextNode(`"${quote.content}"`)
+                            label.appendChild(quoteStored)
+
+                            // creating label element for author name
+                            const quoteAuthor = document.createTextNode(`- ${quote.author}`)
+                            const author = document.createElement('label')
+                            author.appendChild(quoteAuthor)
+                            label.appendChild(document.createElement('br'))
+                            divElement.appendChild(label)
+                            divElement.appendChild(author)
+
+                            const para = document.createElement('span')
+                            para.id = 'editDelete-buttons'
+
+                            // creating edit and delete button
+                            const editBtn = document.createElement('button')
+                            const deleteBtn = document.createElement('button')
+
+                            editBtn.class = "btn"
+                            editBtn.id = Number(new Date()) + i
+                            editBtn.style = 'float: left; margin-left: 1135px; background-color:rgb(240, 240, 240);border: none;border-radius: 5px;font-size: 20px;margin-right: 2px;'
+                            editBtn.innerHTML = '<i class="fa fa-edit"></i>'
+                            para.appendChild(editBtn)
+                            
+                            // adding click event to edit button
+                            editBtn.addEventListener('click',function(e){
+                                editQuote(editBtn.id,deleteBtn)
+                                deleteBtn.disabled = true
+                            })
+
+                            editBtn.addEventListener('mouseover',function(){
+                                editBtn.style.backgroundColor = 'blue';
+                                editBtn.style.color = 'white';
+                            })
+
+                            editBtn.addEventListener('mouseout',function(){
+                                editBtn.style.backgroundColor = 'rgb(240, 240, 240)';
+                                editBtn.style.color = 'black';
+                            })
+
+
+                            // delete button code
+                            deleteBtn.class = "btn"
+                            deleteBtn.id = Number(new Date()) + i + 100
+                            deleteBtn.style = 'float: right; background-color:rgb(240, 240, 240);border: none;border-radius: 5px;font-size: 20px;margin-right: 2px;'
+                            deleteBtn.innerHTML = '<i class="fa fa-trash"></i>'
+                            para.appendChild(deleteBtn)
+
+                            
+                            // adding click event to delete button
+                            deleteBtn.addEventListener('click',function(e){
+                                e.preventDefault()
+                                deleteQuote(deleteBtn.id)
+                            })
+
+                            divElement.appendChild(para)
+                            
+                            deleteBtn.addEventListener('mouseover',function(){
+                                deleteBtn.style.backgroundColor = 'blue';
+                                deleteBtn.style.color = 'white';
+                            })
+
+                            deleteBtn.addEventListener('mouseout',function(){
+                                deleteBtn.style.backgroundColor = 'rgb(240, 240, 240)';
+                                deleteBtn.style.color = 'black';
+                            })
+                            
+                            mainDiv.appendChild(divElement)
+
+                            //creating hr tag
+                            const hr = document.createElement('hr')
+                            hr.id = 'hr'
+                            hr.width = 1150
+                            mainDiv.appendChild(hr)
+                            quotesHandle.appendChild(mainDiv)
+                            
+                        })
+                    }
+                }
+
+            formHandle.addEventListener('submit', function(e){
+                e.preventDefault()
+            })
+
+            // edit button function invoke
+            function editQuote(id,deleteBtn){
+            
+                    const edit = document.getElementById(id)
+                    const quote = edit.parentElement.parentElement.children[0].textContent
+                    const author = edit.parentElement.parentElement.children[1].textContent
+                    console.log(quote , author)
+                    edit.disabled = true
+                    edit.parentElement.parentElement.style.height = '220px'
+
+                    // Creating element for quote edit
+                    const textarea = document.createElement('textarea')
+                    textarea.value = quote.slice(1,quote.length-1)
+                    textarea.id = 'editQuote'
+                    textarea.required = true
+
+                    // Creating element for author edit
+                    const input = document.createElement('input')
+                    input.type = 'text'
+                    input.value = author.slice(2)
+                    input.id = 'editAuthor'
+                    input.required = true
+                    
+                    edit.parentElement.parentElement.children[0].innerHTML = ''
+                    edit.parentElement.parentElement.children[1].innerHTML = ''
+
+                    edit.parentElement.parentElement.children[0].appendChild(textarea)
+                    edit.parentElement.parentElement.children[0].appendChild(document.createElement('br'))
+
+                    edit.parentElement.parentElement.children[1].appendChild(input)
+                    edit.parentElement.parentElement.children[2].appendChild(document.createElement('br'))
+        
+                    // To save the edited quote
+                    const saveBtn = document.createElement('button')
+                    saveBtn.innerHTML = 'Save'
+                    saveBtn.id = 'saveBtn'
+
+                    // performing save operation
+                    saveBtn.addEventListener('click',function(){
+                        updateLocalStorage(input.id,textarea.id,quote,author)
+                    })
+
+
+                    // edit button mouseover events
+                    saveBtn.addEventListener('mouseover',function(){
+                        saveBtn.style.backgroundColor = 'blue';
+                        saveBtn.style.color = 'white';
+                    })
+
+
+                    // edit button mouseout events
+                    saveBtn.addEventListener('mouseout',function(){
+                        saveBtn.style.backgroundColor = 'rgb(240, 240, 240)';
+                        saveBtn.style.color = 'black';
+                    })
+
+
+                    // To cancel
+                    const cancelBtn = document.createElement('button')
+                    cancelBtn.innerHTML = 'Cancel'
+                    cancelBtn.id = 'cancelBtn'
+
+                    cancelBtn.addEventListener('click',function(){
+                        edit.parentElement.parentElement.children[0].innerHTML = `<br>${quote}`
+                        edit.parentElement.parentElement.children[0].appendChild(document.createElement('br'))
+                        edit.parentElement.parentElement.children[1].textContent = author
+                        edit.parentElement.parentElement.style.height = '110px'
+                        const span = document.createTextNode('')
+                        edit.parentElement.parentElement.children[2].children[4].remove()
+                        edit.parentElement.parentElement.children[2].replaceChild(span,cancelBtn)
+                        edit.disabled = false
+                        edit.style.backgroundColor = 'rgb(240, 240, 240)';
+                        edit.style.color = 'black';
+
+                        deleteBtn.disabled = false
+                    })
+
+                    // cancel button mouseover events
+                    cancelBtn.addEventListener('mouseover',function(){
+                        cancelBtn.style.backgroundColor = 'blue';
+                        cancelBtn.style.color = 'white';
+                    })
+
+                    // cancel button mouseout events
+                    cancelBtn.addEventListener('mouseout',function(){
+                        cancelBtn.style.backgroundColor = 'rgb(240, 240, 240)';
+                        cancelBtn.style.color = 'black';
+                    })
+
+
+                    edit.parentElement.appendChild(document.createElement('br'))
+                    edit.parentElement.appendChild(saveBtn)
+                    edit.parentElement.appendChild(cancelBtn)
+                
+                }
+
+
+            // function to delete the quote
+            function deleteQuote(id){
+                const deleteQuote = document.getElementById(id)
+                const confirmHandle = confirm('Confirm to delete the record?')
+                if(confirmHandle){
+                    let quote = deleteQuote.parentElement.parentElement.children[0].textContent
+                    let author = deleteQuote.parentElement.parentElement.children[1].textContent
+                    quote = quote.slice(1,quote.length-1)
+
+                    let stored 
+                    stored = JSON.parse(localStorage.getItem('localObj'))
+                    console.log(stored)
+                    for(let i = 0; i < stored.length; i++){
+                        const quoteString = stored[i]['content']
+                        if(quoteString == quote){
+                            console.log(stored[i],i)
+                            stored.splice(i,1)
+                            break
+                        }
+                    } 
+                    localStorage.setItem('localObj',JSON.stringify(stored))
+                    deleteQuote.parentElement.parentElement.parentElement.remove()
+                  
+                    //  if loacal storage length is empty
+                    if(stored.length <= 0){
+                        quotesHandle.innerHTML = `<span style='font-size: 22px;'><b>No records to display<b></span>`  
+                    }                  
+                }
+            }
+
+
+                    function updateLocalStorage(authorId,quoteId,quote,author){
+                
+                        const authorHandle = document.getElementById(authorId)
+                        const quoteHandle = document.getElementById(quoteId)
+
+                        if(authorHandle.value == '' || quoteHandle.value == ''){
+                            alert('Fields cannot be left empty !!')
+                        }else{
+                            const confirmHandle = confirm('Are you sure to update the Quote?')
+                        if(confirmHandle){
+
+                        quote = quote.slice(1,quote.length-1)
+                        author = author.slice(2)
+
+                        let stored
+                        stored = JSON.parse(localStorage.getItem('localObj'))
+
+                        for(let i = 0; i < stored.length; i++){
+                            const quoteString = stored[i]['content']
+                            const authorString = stored[i]['author']
+
+                            if((quoteString == quote) && (authorString == author)){
+
+                                console.log(stored[i])
+                                stored[i]['content'] = quoteHandle.value
+                                stored[i]['author'] = authorHandle.value
+                                break
+                            }
+                        }
+                        localStorage.setItem('localObj',JSON.stringify(stored))
+                        displayLocal()
+                    }
+
+                    }
+                 }
+            </script> 
+        </form>
+    </body>
+</html>

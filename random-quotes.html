@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>  
+        <title>Random Quotes(API)</title>
+        <link rel="stylesheet" type="text/css" href="style-sheet.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body align = 'center'>
+        <form id='form'>
+        <h1 >Quotify</h1>
+        <div id='menu-links'>
+            <a href='random-quotes.html'>Random Quotes (API)</a><b>|</b><a href='random-quotes-local.html'>Random Quotes (Local)</a><b>|</b><a href='add-quotes.html'>Add Quotes</a>|<a href='list-quotes.html'>List All (Local)</a>
+        </div>
+        <div id='container'><br>
+            <label id='quotes'></label>
+            <br>
+            <br><label id='author'></label>
+            </div>
+        <button class="btn" id='save'><i class="fa fa-save"></i> Save to local</button><br>
+        <label>
+                <input type='submit' value='Get another Quote' id='generate'>
+        </label>
+    </form>
+
+        <script>
+            let quoteObj = {},author,text
+            const quotesHandle = document.getElementById('quotes')
+            const authorHandle = document.getElementById('author')
+            const formHandle = document.getElementById('form')
+            const container = document.getElementById('container')
+            const saveHandle = document.getElementById('save')
+            const submitHandle = document.getElementById('generate')
+
+
+            function apiRequest(){
+                const xhr = new XMLHttpRequest()
+ //               xhr.open('GET', 'http://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json&jsonp=?')
+            xhr.open('GET','https://cors-anywhere.herokuapp.com/https://opinionated-quotes-api.gigalixirapp.com/v1/quotes') 
+              xhr.send()
+
+                xhr.onload = function(){
+                const quotes = JSON.parse(xhr.responseText)
+                console.log(quotes.quotes[0])
+                quotesHandle.innerHTML = `" ${quotes.quotes[0].quote}"`
+                authorHandle.innerHTML = `<b>-</b> ${quotes.quotes[0].author}`
+                author = quotes.quotes[0].author
+                text = quotes.quotes[0].quote
+              }
+            }
+
+            window.onload = function(){
+                apiRequest()
+            }
+
+            formHandle.addEventListener('submit',function(e){
+                e.preventDefault()
+                saveHandle.disabled = false
+                saveHandle.innerHTML = '<i class="fa fa-save"><b> Saved to local<b>'
+                console.log('function called')
+                apiRequest()
+            })   
+
+            submitHandle.addEventListener('mouseover',function(){
+                submitHandle.style.backgroundColor = 'blue';
+                submitHandle.style.color = 'white';
+            })
+
+            submitHandle.addEventListener('mouseout',function(){
+                submitHandle.style.backgroundColor = 'rgb(240, 240, 240)';
+                submitHandle.style.color = 'black';
+            })
+
+
+            saveHandle.addEventListener('mouseover',function(){
+                saveHandle.style.backgroundColor = 'blue';
+                saveHandle.style.color = 'white';
+            })
+
+            saveHandle.addEventListener('mouseout',function(){
+                saveHandle.style.backgroundColor = 'rgb(240, 240, 240)';
+                saveHandle.style.color = 'black';
+            })
+
+            saveHandle.addEventListener('click',function(){
+                      quoteObj = {
+                        author: author.slice(0),
+                        content: text.slice(0,text.length-1)
+                    }
+                    let stored
+                    if(localStorage.getItem('localObj')){
+                        stored = JSON.parse(localStorage.getItem('localObj'))
+                    }  else{
+                        localStorage.setItem('localObj',JSON.stringify([]))
+                        stored = JSON.parse(localStorage.getItem('localObj'))
+                    }
+
+                    stored.push(quoteObj)
+                    localStorage.setItem('localObj',JSON.stringify(stored))
+
+                    console.log(JSON.parse(localStorage.getItem('localObj')))  
+                    saveHandle.disabled = true
+                    saveHandle.innerHTML = '<i class="fa fa-save"><b> Saved<b>'
+
+                    saveHandle.style.backgroundColor = 'rgb(240, 240, 240)';
+                    saveHandle.style.color = 'black';
+                    saveHandle.style.fontWeight = 'bold';      
+            })           
+        </script>
+    </body>
+</html>
